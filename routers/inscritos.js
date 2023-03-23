@@ -14,13 +14,21 @@ router.get("/", async function (req, res) {
     }
    
 })
-router.get("/:id", function (req, res) {
+router.get("/:id", async function (req, res) {
+ 
+      try {
+      const _id = req.params.id;  
+       const getUser = await usuarios.findById(_id); 
+       res.json(getUser);  
+     } catch (error) {  
+        res.status(500).json({ message: error.message});
+     } 
 
-    res.send("get this id sucess")
+    
 })
 router.post("/", async function (req, res) {
 
-    console.log(req.body)
+ 
     const insertId = new usuarios({
         nome : req.body.nome,
         canal: req.body.canal
