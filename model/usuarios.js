@@ -1,13 +1,14 @@
 const mongoose = require('mongoose');
 
 const usuarioTable  = new mongoose.Schema({
+
     nome:{
-        type: 'string',
-        required: true,
+        type: String,
+        required: true
     },
     canal :{
-        type:'string',
-        required: true,
+        type:String,
+        required: true
     },
     data: {
         type:Date,
