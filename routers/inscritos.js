@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const usuarios = require('../model/usuarios');
+const Usuarios = require('../model/usuarios');
 
 
 router.get("/", async function (req, res) {
 
     try {
-        const users = await usuarios.find();
+        const users = await Usuarios.find();
         res.json(users);
     } catch (error) {
         res.status(500).json({ message: error.message })
@@ -14,8 +14,10 @@ router.get("/", async function (req, res) {
     }
    
 })
-router.get("/:id", async function (req, res) {
- 
+router.get("/:id",validarLogin, async function (req, res) {
+  
+    res.json(res.Usuarios)
+    /*
       try {
       const _id = req.params.id;  
        const getUser = await usuarios.findById(_id); 
@@ -23,13 +25,14 @@ router.get("/:id", async function (req, res) {
      } catch (error) {  
         res.status(500).json({ message: error.message});
      } 
-
+    */
     
 })
+
 router.post("/", async function (req, res) {
 
  
-    const insertId = new usuarios({
+    const insertId = new Usuarios({
         nome : req.body.nome,
         canal: req.body.canal
     });
@@ -43,13 +46,40 @@ router.post("/", async function (req, res) {
 
 })
 
-router.patch("/:id", function (req, res) {
+router.patch("/:id",validarLogin, function (req, res) {
 
     res.send("update this id success")
 })
-router.delete("/:id", function (req, res) {
 
-    res.send("delete this id success")
+router.delete("/:id",validarLogin, async function (req, res) {
+
+    try {
+        let deleteID = req.params.id;
+        deleteUser = await Usuarios.deleteOne({_id: deleteID});
+        if(deleteUser){
+            res.status(200).json({message: "Sucesso ao Deletar"});
+        }
+        
+    } catch (error) {
+        res.status(400).json({message:message.error});
+        
+    }
 })
+
+async function validarLogin(req, res,next) {
+    
+    try {
+        let _id = req.params.id;
+        usuarios = await Usuarios.findById(_id);
+        if(usuarios == null){
+            return res.status(404).json({message:"não encontrado"})
+        }
+    } catch (error) {
+        return res.status(500).json({message:error.message})
+        
+    }
+    res.Usuarios = usuarios;
+    next();
+}
 
 module.exports = router;
