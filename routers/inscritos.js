@@ -46,9 +46,26 @@ router.post("/", async function (req, res) {
 
 })
 
-router.patch("/:id",validarLogin, function (req, res) {
+router.patch("/:id",validarLogin,async function (req, res) {
+     let nome =  req.body.nome;
+     let canal =  req.body.canal;
+            
+     if(nome != null ){
+        res.Usuarios.nome =nome;
+    }
+    if(canal !=null ){
+         res.Usuarios.canal =canal;
 
-    res.send("update this id success")
+     }
+
+     try {
+        const up = await res.Usuarios.save();
+        res.json(up);
+     } catch (error) {
+        
+        res.status(400).json({message: error.message});
+     }
+
 })
 
 router.delete("/:id",validarLogin, async function (req, res) {
